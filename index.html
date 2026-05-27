@@ -26,9 +26,9 @@ header{
 .sub-title{
     text-align:center;
     color:#999;
-    margin-top:10px;
-    margin-bottom:30px;
-    font-size:18px;
+    margin-top:15px;
+    margin-bottom:40px;
+    font-size:22px;
 }
 
 .gallery{
@@ -36,47 +36,36 @@ header{
     flex-wrap:wrap;
     justify-content:center;
     gap:30px;
-    padding:20px 40px 60px;
+    padding:20px 40px 80px;
 }
 
 .card{
-    width:320px;
+    width:340px;
     background:#1b1b1b;
     border-radius:12px;
     overflow:hidden;
     transition:0.2s;
-    box-shadow:0 0 10px rgba(0,0,0,0.4);
+    box-shadow:0 0 12px rgba(0,0,0,0.5);
 }
 
 .card:hover{
-    transform:scale(1.02);
-}
-
-.card img{
-    width:100%;
-    height:430px;
-    object-fit:cover;
-    display:block;
+    transform:scale(1.03);
 }
 
 .card-body{
-    padding:20px;
+    padding:35px 20px;
+    text-align:center;
 }
 
-.card-title{
-    font-size:28px;
+.date-title{
+    font-size:42px;
     font-weight:bold;
-    margin-bottom:10px;
-}
-
-.card-tags{
-    color:#999;
     margin-bottom:15px;
 }
 
-.card-description{
-    color:#ddd;
-    line-height:1.6;
+.date-description{
+    color:#999;
+    font-size:20px;
 }
 
 footer{
@@ -95,64 +84,43 @@ footer{
 </header>
 
 <div class="sub-title">
-AI画像・趣味保管庫
+煩悩ログ（日付管理）
 </div>
 
 <div class="gallery">
 
     <div class="card">
-        <img src="https://placehold.jp/500x700.png" alt="画像1">
-
         <div class="card-body">
-            <div class="card-title">
-                銀髪猫耳
+            <div class="date-title">
+                2026-05-27
             </div>
 
-            <div class="card-tags">
-                #銀髪 #猫耳 #AI画像
-            </div>
-
-            <div class="card-description">
-                趣味保管用カテゴリー。
-                今後ここに画像を追加予定。
+            <div class="date-description">
+                今日の煩悩ログ
             </div>
         </div>
     </div>
 
     <div class="card">
-        <img src="https://placehold.jp/500x700.png" alt="画像2">
-
         <div class="card-body">
-            <div class="card-title">
-                夜系
+            <div class="date-title">
+                2026-05-28
             </div>
 
-            <div class="card-tags">
-                #夜 #青 #静かな圧
-            </div>
-
-            <div class="card-description">
-                夜景、静かな空気感、
-                青系の雰囲気画像保管用。
+            <div class="date-description">
+                今日の煩悩ログ
             </div>
         </div>
     </div>
 
     <div class="card">
-        <img src="https://placehold.jp/500x700.png" alt="画像3">
-
         <div class="card-body">
-            <div class="card-title">
-                ホラー系
+            <div class="date-title">
+                2026-05-29
             </div>
 
-            <div class="card-tags">
-                #ホラー #語らない恐怖
-            </div>
-
-            <div class="card-description">
-                不穏、怖い、
-                語らない恐怖系画像保管。
+            <div class="date-description">
+                今日の煩悩ログ
             </div>
         </div>
     </div>

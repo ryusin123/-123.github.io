@@ -5,7 +5,11 @@ on:
     paths:
       - 'img/**'
       - '.github/workflows/update-posts.yml'
+
   workflow_dispatch:
+
+  schedule:
+    - cron: '5 15 * * *'
 
 jobs:
   build:
@@ -28,35 +32,86 @@ jobs:
           root = "img"
           posts_map = {}
 
-          today = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
+          JST = timezone(timedelta(hours=9))
+          today = datetime.now(JST).strftime("%Y-%m-%d")
+
+          posts_map[today] = []
 
           if os.path.exists(root):
+
               for item in sorted(os.listdir(root)):
+
                   path = os.path.join(root, item)
 
                   if os.path.isfile(path):
-                      lower = item.lower()
-                      if lower.endswith((".jpg", ".jpeg", ".png", ".webp", ".gif")):
-                          posts_map.setdefault(today, []).append(f"img/{item}")
 
-                  if os.path.isdir(path):
+                      lower = item.lower()
+
+                      if lower.endswith((
+                          ".jpg",
+                          ".jpeg",
+                          ".png",
+                          ".webp",
+                          ".gif"
+                      )):
+                          posts_map.setdefault(
+                              today,
+                              []
+                          ).append(
+                              f"img/{item}"
+                          )
+
+                  elif os.path.isdir(path):
+
                       date = item
-                      for file in sorted(os.listdir(path)):
+
+                      for file in sorted(
+                          os.listdir(path)
+                      ):
+
                           lower = file.lower()
-                          if lower.endswith((".jpg", ".jpeg", ".png", ".webp", ".gif")):
-                              posts_map.setdefault(date, []).append(f"img/{date}/{file}")
+
+                          if lower.endswith((
+                              ".jpg",
+                              ".jpeg",
+                              ".png",
+                              ".webp",
+                              ".gif"
+                          )):
+
+                              posts_map.setdefault(
+                                  date,
+                                  []
+                              ).append(
+                                  f"img/{date}/{file}"
+                              )
 
           posts = []
 
-          for date in sorted(posts_map.keys(), reverse=True):
+          for date in sorted(
+              posts_map.keys(),
+              reverse=True
+          ):
+
               posts.append({
                   "date": date,
                   "count": len(posts_map[date]),
                   "images": posts_map[date]
               })
 
-          with open("posts.json", "w", encoding="utf-8") as f:
-              json.dump(posts, f, ensure_ascii=False, indent=2)
+          with open(
+              "posts.json",
+              "w",
+              encoding="utf-8"
+          ) as f:
+
+              json.dump(
+                  posts,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+
           EOF
 
       - name: Commit posts.json

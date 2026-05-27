@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "date": "2026-05-27",
+    "count": 3,
+    "images": [
+      "img/ComfyUI_01713_.png",
+      "img/ComfyUI_01714_.png",
+      "img/ComfyUI_01715_.png"
+    ]
+  }
+]

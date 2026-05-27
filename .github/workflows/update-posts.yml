@@ -1,0 +1,84 @@
+name: Update Posts
+
+on:
+  push:
+    paths:
+      - 'img/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate posts.json
+        run: |
+          python <<EOF
+          import os
+          import json
+
+          root = "img"
+          posts = []
+
+          if os.path.exists(root):
+
+              for folder in sorted(os.listdir(root), reverse=True):
+
+                  folder_path = os.path.join(root, folder)
+
+                  if not os.path.isdir(folder_path):
+                      continue
+
+                  images = []
+
+                  for file in sorted(os.listdir(folder_path)):
+
+                      lower = file.lower()
+
+                      if lower.endswith((
+                          ".jpg",
+                          ".jpeg",
+                          ".png",
+                          ".webp",
+                          ".gif"
+                      )):
+                          images.append(
+                              f"img/{folder}/{file}"
+                          )
+
+                  if images:
+                      posts.append({
+                          "date": folder,
+                          "count": len(images),
+                          "images": images
+                      })
+
+          with open(
+              "posts.json",
+              "w",
+              encoding="utf-8"
+          ) as f:
+              json.dump(
+                  posts,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+          EOF
+
+      - name: Commit posts.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add posts.json
+
+          git diff --cached --quiet || (
+            git commit -m "auto update posts"
+            git push
+          )

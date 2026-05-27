@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>趣味2号 裏部屋</title>
+
+<style>
+body{
+background:#0b0b0b;
+color:white;
+margin:0;
+font-family:sans-serif;
+}
+
+header{
+background:#000;
+text-align:center;
+padding:40px;
+font-size:48px;
+font-weight:bold;
+border-bottom:2px solid #222;
+}
+
+.back{
+text-align:center;
+margin-top:20px;
+margin-bottom:20px;
+}
+
+.back a{
+color:#999;
+text-decoration:none;
+font-size:22px;
+}
+
+.gallery{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:30px;
+padding:40px;
+}
+
+.card{
+width:320px;
+background:#1b1b1b;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 0 12px rgba(0,0,0,0.4);
+}
+
+.card img{
+width:100%;
+display:block;
+}
+
+.card-body{
+padding:20px;
+}
+
+.title{
+font-size:28px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.description{
+font-size:18px;
+color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<header id="pageTitle">
+煩悩ログ
+</header>
+
+<div class="back">
+<a href="index.html">
+← 戻る
+</a>
+</div>
+
+<div class="gallery" id="gallery">
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const date = params.get("date");
+
+document.getElementById("pageTitle").innerText =
+date + " 煩悩ログ";
+
+fetch("posts.json")
+.then(response => response.json())
+.then(posts => {
+
+const gallery = document.getElementById("gallery");
+
+const target = posts.find(p => p.date === date);
+
+if(!target) return;
+
+target.images.forEach((img,index)=>{
+
+gallery.innerHTML += `
+<div class="card">
+
+<img src="${img}">
+
+<div class="card-body">
+<div class="title">
+今日の煩悩 ${index+1}
+</div>
+
+<div class="description">
+${date}
+</div>
+</div>
+
+</div>
+`;
+
+});
+
+});
+</script>
+
+</body>
+</html>

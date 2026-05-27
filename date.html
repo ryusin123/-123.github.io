@@ -7,32 +7,166 @@
 <title>趣味2号 日付ログ</title>
 
 <style>
-body{background:#0b0b0b;color:white;margin:0;font-family:sans-serif;}
-header{background:#000;text-align:center;padding:40px 20px;font-size:48px;font-weight:bold;border-bottom:2px solid #222;}
-.top-area{text-align:center;padding:20px;}
-.top-area a{display:inline-block;background:#222;color:white;text-decoration:none;padding:12px 24px;border-radius:10px;font-size:20px;margin:6px;}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px;max-width:1500px;margin:0 auto;padding:30px;}
-.card{background:#1b1b1b;border-radius:12px;overflow:hidden;box-shadow:0 0 12px rgba(0,0,0,0.5);}
-.card img{width:100%;height:430px;object-fit:cover;object-position:center top;display:block;}
-.card-body{padding:14px;}
-.card-title{font-size:22px;font-weight:bold;}
-.pagination{text-align:center;padding:30px 20px 70px;}
-.pagination a{display:inline-block;background:#222;color:white;text-decoration:none;padding:12px 20px;margin:6px;border-radius:8px;font-size:20px;}
-.pagination .current{background:#555;}
+body{
+background:#111;
+color:#ddd;
+margin:0;
+font-family:Arial, sans-serif;
+}
+
+.top-return{
+background:#000;
+padding:18px;
+text-align:center;
+border-bottom:1px solid #333;
+}
+
+.top-return a{
+color:#fff;
+background:#333;
+padding:10px 22px;
+border-radius:6px;
+text-decoration:none;
+font-size:18px;
+}
+
+.article{
+max-width:980px;
+margin:0 auto;
+background:#181818;
+min-height:100vh;
+padding-bottom:50px;
+}
+
+.article-header{
+background:#050505;
+padding:28px 24px;
+border-bottom:1px solid #333;
+}
+
+.article-title{
+font-size:34px;
+font-weight:bold;
+color:#fff;
+margin-bottom:14px;
+line-height:1.4;
+}
+
+.article-meta{
+color:#aaa;
+font-size:16px;
+margin-bottom:12px;
+}
+
+.tags{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.tag{
+background:#333;
+color:#ddd;
+padding:6px 10px;
+border-radius:4px;
+font-size:14px;
+}
+
+.image-list{
+padding:24px 14px;
+}
+
+.image-block{
+margin:0 auto 28px;
+text-align:center;
+}
+
+.image-block img{
+max-width:100%;
+width:auto;
+height:auto;
+display:block;
+margin:0 auto;
+border-radius:4px;
+}
+
+.image-caption{
+color:#888;
+font-size:14px;
+margin-top:8px;
+}
+
+.pagination{
+text-align:center;
+padding:30px 10px;
+border-top:1px solid #333;
+}
+
+.pagination a{
+display:inline-block;
+background:#333;
+color:white;
+text-decoration:none;
+padding:10px 16px;
+margin:5px;
+border-radius:5px;
+font-size:18px;
+}
+
+.pagination .current{
+background:#666;
+}
+
+.bottom-return{
+text-align:center;
+padding:20px;
+}
+
+.bottom-return a{
+color:#fff;
+background:#333;
+padding:10px 22px;
+border-radius:6px;
+text-decoration:none;
+font-size:18px;
+}
 </style>
 </head>
 
 <body>
 
-<header id="pageTitle">煩悩ログ</header>
-
-<div class="top-area">
+<div class="top-return">
 <a href="index.html">トップに戻る</a>
 </div>
 
-<div class="gallery" id="gallery"></div>
+<main class="article">
 
-<div class="pagination" id="pagination"></div>
+<div class="article-header">
+<div class="article-title" id="pageTitle">
+煩悩ログ
+</div>
+
+<div class="article-meta" id="pageMeta">
+</div>
+
+<div class="tags">
+<span class="tag">日付ログ</span>
+<span class="tag">画像保管</span>
+<span class="tag">趣味2号</span>
+</div>
+</div>
+
+<div class="image-list" id="imageList">
+</div>
+
+<div class="pagination" id="pagination">
+</div>
+
+<div class="bottom-return">
+<a href="index.html">トップに戻る</a>
+</div>
+
+</main>
 
 <script>
 const PER_PAGE = 50;
@@ -41,52 +175,74 @@ const params = new URLSearchParams(window.location.search);
 const date = params.get("date");
 const currentPage = Number(params.get("page") || 1);
 
-document.getElementById("pageTitle").innerText = date + " 煩悩ログ";
+document.getElementById("pageTitle").innerText =
+date + " 煩悩ログ";
 
 fetch("posts.json")
 .then(response => response.json())
 .then(posts => {
+
 const target = posts.find(p => p.date === date);
-if(!target) return;
+
+if(!target){
+    document.getElementById("pageMeta").innerText =
+    "画像が見つかりません";
+    return;
+}
 
 const images = target.images;
 const totalPages = Math.ceil(images.length / PER_PAGE);
+
+document.getElementById("pageMeta").innerText =
+date + " / " + images.length + "枚 / " + currentPage + "ページ目";
+
 const start = (currentPage - 1) * PER_PAGE;
 const end = start + PER_PAGE;
 const pageImages = images.slice(start,end);
 
-const gallery = document.getElementById("gallery");
+const imageList = document.getElementById("imageList");
 
 pageImages.forEach((img,index) => {
-gallery.innerHTML += `
-<div class="card">
-<img src="${img}">
-<div class="card-body">
-<div class="card-title">今日の煩悩 ${start + index + 1}</div>
-</div>
-</div>
-`;
+    imageList.innerHTML += `
+        <div class="image-block">
+            <img src="${img}" alt="">
+            <div class="image-caption">
+                ${start + index + 1} / ${images.length}
+            </div>
+        </div>
+    `;
 });
 
 const pagination = document.getElementById("pagination");
 
 if(totalPages > 1){
-if(currentPage > 1){
-pagination.innerHTML += `<a href="date.html?date=${date}&page=${currentPage - 1}">前へ</a>`;
+
+    if(currentPage > 1){
+        pagination.innerHTML += `
+            <a href="date.html?date=${date}&page=${currentPage - 1}">前へ</a>
+        `;
+    }
+
+    for(let i = 1; i <= totalPages; i++){
+        if(i === currentPage){
+            pagination.innerHTML += `
+                <a class="current" href="date.html?date=${date}&page=${i}">${i}</a>
+            `;
+        }else{
+            pagination.innerHTML += `
+                <a href="date.html?date=${date}&page=${i}">${i}</a>
+            `;
+        }
+    }
+
+    if(currentPage < totalPages){
+        pagination.innerHTML += `
+            <a href="date.html?date=${date}&page=${currentPage + 1}">次へ</a>
+        `;
+    }
+
 }
 
-for(let i=1;i<=totalPages;i++){
-if(i === currentPage){
-pagination.innerHTML += `<a class="current" href="date.html?date=${date}&page=${i}">${i}</a>`;
-}else{
-pagination.innerHTML += `<a href="date.html?date=${date}&page=${i}">${i}</a>`;
-}
-}
-
-if(currentPage < totalPages){
-pagination.innerHTML += `<a href="date.html?date=${date}&page=${currentPage + 1}">次へ</a>`;
-}
-}
 });
 </script>
 

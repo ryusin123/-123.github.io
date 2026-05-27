@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'img/**'
+      - '.github/workflows/update-posts.yml'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,59 +23,45 @@ jobs:
           python <<EOF
           import os
           import json
+          from datetime import datetime, timedelta, timezone
 
           root = "img"
-          posts = []
+          posts_map = {}
+
+          today = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
 
           if os.path.exists(root):
+              for item in sorted(os.listdir(root)):
+                  path = os.path.join(root, item)
 
-              for folder in sorted(os.listdir(root), reverse=True):
+                  if os.path.isfile(path):
+                      lower = item.lower()
+                      if lower.endswith((".jpg", ".jpeg", ".png", ".webp", ".gif")):
+                          posts_map.setdefault(today, []).append(f"img/{item}")
 
-                  folder_path = os.path.join(root, folder)
+                  if os.path.isdir(path):
+                      date = item
+                      for file in sorted(os.listdir(path)):
+                          lower = file.lower()
+                          if lower.endswith((".jpg", ".jpeg", ".png", ".webp", ".gif")):
+                              posts_map.setdefault(date, []).append(f"img/{date}/{file}")
 
-                  if not os.path.isdir(folder_path):
-                      continue
+          posts = []
 
-                  images = []
+          for date in sorted(posts_map.keys(), reverse=True):
+              posts.append({
+                  "date": date,
+                  "count": len(posts_map[date]),
+                  "images": posts_map[date]
+              })
 
-                  for file in sorted(os.listdir(folder_path)):
-
-                      lower = file.lower()
-
-                      if lower.endswith((
-                          ".jpg",
-                          ".jpeg",
-                          ".png",
-                          ".webp",
-                          ".gif"
-                      )):
-                          images.append(
-                              f"img/{folder}/{file}"
-                          )
-
-                  if images:
-                      posts.append({
-                          "date": folder,
-                          "count": len(images),
-                          "images": images
-                      })
-
-          with open(
-              "posts.json",
-              "w",
-              encoding="utf-8"
-          ) as f:
-              json.dump(
-                  posts,
-                  f,
-                  ensure_ascii=False,
-                  indent=2
-              )
+          with open("posts.json", "w", encoding="utf-8") as f:
+              json.dump(posts, f, ensure_ascii=False, indent=2)
           EOF
 
       - name: Commit posts.json
         run: |
-          git config user.name "github-actions"
+          git config user.name "actions-user"
           git config user.email "actions@github.com"
 
           git add posts.json
